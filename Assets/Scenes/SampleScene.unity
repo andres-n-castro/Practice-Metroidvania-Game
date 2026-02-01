@@ -297,7 +297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkspeed: 10
-  jumpForce: 35
+  jumpForce: 45
   groundCheckPoint: {fileID: 653413034}
   groundCheckY: 0.2
   whatIsGround:
