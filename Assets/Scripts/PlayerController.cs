@@ -8,11 +8,14 @@ public class PlayerController : MonoBehaviour
 
     [Header("Ground Check Settings")]
     [SerializeField] private float jumpForce = 45;
+    private int jumpBufferCounter;
+    [SerializeField] private int jumpBufferFrames;
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckY = 0.2f;
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private float groundCheckX = 0.5f;
 
+    private PlayerStateList pState;
     private Rigidbody2D rb;
     private float xAxis;
     Animator anim;
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        pState = GetComponent<PlayerStateList>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
@@ -42,6 +46,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         GetInputs();
+        UpdateJumpVariables();
         Flip();
         Move();
         Jump();
@@ -90,14 +95,36 @@ public class PlayerController : MonoBehaviour
         if(Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x,0,0);
+            pState.jumping = false;
         }
 
-        if(Input.GetButtonDown("Jump") && Grounded())
+        if (!pState.jumping)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
+            if(jumpBufferCounter > 0 && Grounded())
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
+                pState.jumping = true;
+            }
         }
 
         anim.SetBool("Jumping", !Grounded());
+    }
+
+    void UpdateJumpVariables()
+    {
+        if (Grounded())
+        {
+            pState.jumping = false;
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpBufferCounter = jumpBufferFrames;
+        }
+        else
+        {
+            jumpBufferCounter--;
+        }
     }
 
 }
