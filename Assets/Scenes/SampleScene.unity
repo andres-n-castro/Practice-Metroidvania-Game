@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkspeed: 10
-  jumpBufferFrames: 8
+  jumpBufferFrames: 1
   groundCheckPoint: {fileID: 653413034}
   groundCheckY: 0.2
   whatIsGround:
@@ -306,7 +306,7 @@ MonoBehaviour:
     m_Bits: 8
   groundCheckX: 0.5
   jumpForce: 45
-  coyoteTime: 0.2
+  coyoteTime: 0.1
 --- !u!95 &31677716
 Animator:
   serializedVersion: 7
