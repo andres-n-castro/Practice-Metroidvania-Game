@@ -7,13 +7,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float walkspeed = 10;
 
     [Header("Ground Check Settings")]
-    [SerializeField] private float jumpForce = 45;
-    private int jumpBufferCounter;
     [SerializeField] private int jumpBufferFrames;
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckY = 0.2f;
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private float groundCheckX = 0.5f;
+
+    [Header("Jump Settings")]
+    [SerializeField] private float jumpForce = 45;
+    private float jumpBufferCounter;
+    private float coyoteTimeCounter;
+    [SerializeField] private float coyoteTime;
+
 
     private PlayerStateList pState;
     private Rigidbody2D rb;
@@ -22,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     public static PlayerController Instance;
 
-    public void Awake()
+    private void Awake()
     {
         if(Instance != null && Instance != this)
         {
@@ -100,7 +105,7 @@ public class PlayerController : MonoBehaviour
 
         if (!pState.jumping)
         {
-            if(jumpBufferCounter > 0 && Grounded())
+            if(jumpBufferCounter > 0 && coyoteTimeCounter > 0)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
                 pState.jumping = true;
@@ -115,6 +120,11 @@ public class PlayerController : MonoBehaviour
         if (Grounded())
         {
             pState.jumping = false;
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
         }
 
         if (Input.GetButtonDown("Jump"))
@@ -123,7 +133,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            jumpBufferCounter--;
+            jumpBufferCounter = jumpBufferCounter - Time.deltaTime * 10;
         }
     }
 
